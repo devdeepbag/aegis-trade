@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aegis Trade | Factoring Aggregator & Risk Assessor</title>
+  <meta name="description" content="A premium trade finance aggregator connecting trading partners with factoring companies, featuring real-time risk assessment and offer comparisons.">
+  <!-- Outfit Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  
+  <!-- Global Top Header & Ticker -->
+  <header class="global-header">
+    <div class="brand-section">
+      <div class="logo-icon" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>AEGIS TRADE</h1>
+        <span class="sub-brand">Finance Aggregator</span>
+      </div>
+    </div>
+    
+    <!-- Portal switcher toggle -->
+    <div class="portal-toggle-container">
+      <span class="portal-toggle-label">Active Portal:</span>
+      <div class="portal-toggle-group" role="radiogroup" aria-label="Portal Selector">
+        <button id="toggle-partner" class="toggle-btn active" role="radio" aria-checked="true" type="button">
+          Trading Partner
+        </button>
+        <button id="toggle-factor" class="toggle-btn" role="radio" aria-checked="false" type="button">
+          Factor Dashboard
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Global Trade Event Live Ticker -->
+  <div class="ticker-wrapper" aria-label="Global Trade Alert Ticker">
+    <div class="ticker-content" id="global-ticker">
+      <!-- Injected by JS -->
+      Loading live global trade data and maritime route updates...
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="app-layout">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <!-- Sidebar navigation changes depending on active portal -->
+      <nav id="partner-nav" class="sidebar-nav">
+        <ul>
+          <li>
+            <button class="nav-item active" data-view="partner-deals" type="button">
+              <span class="icon" aria-hidden="true">📂</span> My Trade Deals
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-view="partner-new-deal" type="button">
+              <span class="icon" aria-hidden="true">➕</span> New Deal Submission
+            </button>
+          </li>
+        </ul>
+      </nav>
+      
+      <nav id="factor-nav" class="sidebar-nav hidden">
+        <div class="factor-select-wrapper">
+          <label for="active-factor-select">Representing Factor:</label>
+          <select id="active-factor-select" class="factor-select">
+            <option value="apex">Apex Trade Credit</option>
+            <option value="horizon">Horizon Liquidity</option>
+            <option value="oasis">Oasis Capital Partners</option>
+            <option value="beacon">Beacon Finance Corp</option>
+          </select>
+        </div>
+        <hr class="nav-separator">
+        <ul>
+          <li>
+            <button class="nav-item active" data-view="factor-deals" type="button">
+              <span class="icon" aria-hidden="true">📥</span> Submitted Deals
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-view="factor-offers" type="button">
+              <span class="icon" aria-hidden="true">📝</span> Sent Offers
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Sidebar Status Card -->
+      <div class="sidebar-status-card">
+        <h3>System Status</h3>
+        <div class="status-indicator-row">
+          <span class="indicator-dot green"></span>
+          <span class="indicator-text">Escrow Ledger: Active</span>
+        </div>
+        <div class="status-indicator-row">
+          <span class="indicator-dot green"></span>
+          <span class="indicator-text">Risk Core Engine: Live</span>
+        </div>
+        <div class="status-indicator-row">
+          <span class="indicator-dot green"></span>
+          <span class="indicator-text">Factor Sync API: Connected</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN WORKSPACE -->
+    <main class="app-workspace">
+      
+      <!-- PORTAL A: TRADING PARTNER VIEWS -->
+      <div id="portal-partner" class="portal-view">
+        
+        <!-- View A1: Deals List -->
+        <section id="view-partner-deals" class="workspace-view active">
+          <div class="section-header">
+            <h2>My Trade Deals</h2>
+            <p class="section-desc">Manage submitted trade deals, track review status, and accept financing offers.</p>
+          </div>
+          
+          <div class="deals-grid" id="partner-deals-list">
+            <!-- Dynamically populated -->
+            <div class="no-deals-placeholder">
+              <p>No trade deals submitted yet.</p>
+              <button class="btn btn-primary" onclick="switchSidebarView('partner-new-deal')" type="button">Submit First Deal</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- View A2: Submit New Deal -->
+        <section id="view-partner-new-deal" class="workspace-view">
+          <div class="section-header">
+            <h2>New Deal Submission</h2>
+            <p class="section-desc">Enter trade logistics details and upload required documentation for credit scoring.</p>
+          </div>
+
+          <div class="form-container-split">
+            <!-- Preset Quick Templates -->
+            <div class="template-selector-card glass-panel">
+              <h3>⚡ Quick Templates</h3>
+              <p class="small-text text-dim">Load pre-populated trade scenarios to test different risk levels and document validation flags.</p>
+              <div class="template-buttons">
+                <button type="button" class="btn btn-outline btn-sm" id="btn-load-tech-temp">
+                  <span class="badge badge-success">Low Risk</span> Shenzhen ➔ Hamburg
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" id="btn-load-spice-temp">
+                  <span class="badge badge-warning">Med Risk</span> Ho Chi Minh ➔ Los Angeles
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" id="btn-load-petro-temp">
+                  <span class="badge badge-danger">High Risk</span> Jebel Ali ➔ Piraeus
+                </button>
+              </div>
+            </div>
+
+            <!-- Submit Form -->
+            <form id="new-deal-form" class="deal-submission-form glass-panel">
+              <div class="form-section-title">1. Contracting Parties</div>
+              <div class="form-row col-2">
+                <div class="form-group">
+                  <label for="exporter-name">Exporter (Seller) Name</label>
+                  <input type="text" id="exporter-name" required placeholder="e.g., TechFlow Shenzhen Ltd">
+                </div>
+                <div class="form-group">
+                  <label for="exporter-country">Exporter Country</label>
+                  <input type="text" id="exporter-country" required placeholder="e.g., China">
+                </div>
+              </div>
+
+              <div class="form-row col-3">
+                <div class="form-group col-2-span">
+                  <label for="importer-name">Importer (Buyer) Name</label>
+                  <input type="text" id="importer-name" required placeholder="e.g., EuroRetail GmbH">
+                </div>
+                <div class="form-group">
+                  <label for="importer-rating">Buyer Credit Rating</label>
+                  <select id="importer-rating" required>
+                    <option value="AAA">AAA (Extremely Safe)</option>
+                    <option value="AA">AA (Very Safe)</option>
+                    <option value="A">A (Strong)</option>
+                    <option value="BBB">BBB (Good Credit)</option>
+                    <option value="BB">BB (Speculative/Moderate)</option>
+                    <option value="B">B (High Credit Risk)</option>
+                    <option value="CCC">CCC (High Default Hazard)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-section-title">2. Financial Details</div>
+              <div class="form-row col-2">
+                <div class="form-group">
+                  <label for="invoice-amount">Invoice Value (USD)</label>
+                  <div class="input-currency-wrapper">
+                    <span class="currency-prefix">$</span>
+                    <input type="number" id="invoice-amount" min="1000" step="100" required placeholder="e.g., 250000">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="payment-terms">Payment Terms</label>
+                  <select id="payment-terms" required>
+                    <option value="30">Net 30 Days</option>
+                    <option value="60">Net 60 Days</option>
+                    <option value="90">Net 90 Days</option>
+                    <option value="120">Net 120 Days</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-section-title">3. Shipping Logistics</div>
+              <div class="form-row col-2">
+                <div class="form-group">
+                  <label for="origin-port">Origin Port</label>
+                  <input type="text" id="origin-port" required placeholder="e.g., Shenzhen (SZX)">
+                </div>
+                <div class="form-group">
+                  <label for="dest-port">Destination Port</label>
+                  <input type="text" id="dest-port" required placeholder="e.g., Hamburg (HAM)">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="cargo-desc">Cargo Description</label>
+                <input type="text" id="cargo-desc" required placeholder="e.g., High-end consumer electronics & silicon parts">
+              </div>
+
+              <div class="form-section-title">4. Shipping Route & Document Upload</div>
+              
+              <!-- Map Selection/Hint -->
+              <div class="form-group">
+                <label for="transit-route">Maritime Transit Route</label>
+                <select id="transit-route" required>
+                  <option value="transpacific">Transpacific Route (Asia ➔ North America West Coast)</option>
+                  <option value="suez">Suez Canal Passage (Asia ➔ Europe)</option>
+                  <option value="panama">Panama Canal Passage (Pacific ➔ Atlantic)</option>
+                  <option value="cape">Cape of Good Hope Bypass (Alternative Asia ➔ Europe)</option>
+                  <option value="transatlantic">Transatlantic Route (Europe ➔ North America)</option>
+                </select>
+              </div>
+
+              <div class="document-upload-row">
+                <div class="upload-zone" id="upload-invoice-zone">
+                  <input type="file" id="invoice-file" class="hidden-file-input" accept=".pdf,.doc,.docx,.png,.jpg">
+                  <div class="upload-inner">
+                    <span class="upload-icon">📄</span>
+                    <span class="upload-title">Commercial Invoice</span>
+                    <span class="upload-subtext" id="invoice-upload-status">Click to browse or drop template</span>
+                  </div>
+                </div>
+                <div class="upload-zone" id="upload-bol-zone">
+                  <input type="file" id="bol-file" class="hidden-file-input" accept=".pdf,.doc,.docx,.png,.jpg">
+                  <div class="upload-inner">
+                    <span class="upload-icon">🚢</span>
+                    <span class="upload-title">Bill of Lading (B/L)</span>
+                    <span class="upload-subtext" id="bol-upload-status">Click to browse or drop template</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="reset" class="btn btn-outline">Clear Form</button>
+                <button type="submit" class="btn btn-primary">Analyze & Submit Deal</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- PORTAL B: FACTORING COMPANY VIEWS -->
+      <div id="portal-factor" class="portal-view hidden">
+        
+        <!-- View B1: Factor Deals Queue -->
+        <section id="view-factor-deals" class="workspace-view active">
+          <div class="section-header">
+            <h2>Submitted Trade Deals Queue</h2>
+            <p class="section-desc">Review submitted trade deals, run risk audits, inspect documentation, and issue funding proposals.</p>
+          </div>
+
+          <div class="factor-layout-grid">
+            <!-- Left: Deal Queue -->
+            <div class="deals-sidebar glass-panel">
+              <h3>📥 Pending Deals</h3>
+              <div class="factor-deals-list" id="factor-deals-queue">
+                <!-- Dynamically filled -->
+              </div>
+            </div>
+
+            <!-- Right: Deal Evaluation Panel -->
+            <div class="deal-evaluation-space" id="deal-evaluator-panel">
+              <div class="no-deal-selected-notice">
+                <div class="notice-icon">🔍</div>
+                <h3>Select a Deal from the Queue</h3>
+                <p>Click on any pending trade deal in the left queue to begin detailed underwriting, risk auditing, and offer structuring.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- View B2: Sent Offers -->
+        <section id="view-factor-offers" class="workspace-view">
+          <div class="section-header">
+            <h2>Sent Funding Offers</h2>
+            <p class="section-desc">Track all factoring credit proposals submitted by your company and their acceptance status.</p>
+          </div>
+
+          <div class="table-container glass-panel">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Deal ID</th>
+                  <th>Exporter</th>
+                  <th>Importer (Rating)</th>
+                  <th>Invoice Value</th>
+                  <th>Advance Rate</th>
+                  <th>Factoring Fee</th>
+                  <th>Recourse Type</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="factor-sent-offers-table">
+                <!-- Dynamically populated -->
+                <tr>
+                  <td colspan="8" class="text-center text-dim">No offers sent yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- MODAL: DETAILED OFFER COMPARISON & CALCULATOR (Trading Partner) -->
+  <dialog id="offer-comparison-dialog" class="custom-dialog">
+    <div class="dialog-header">
+      <h2 id="dialog-deal-title">Comparing Factoring Offers</h2>
+      <button type="button" class="btn-close-dialog" onclick="document.getElementById('offer-comparison-dialog').close()">×</button>
+    </div>
+    
+    <div class="dialog-body">
+      <!-- Deal Details Alert Summary -->
+      <div class="deal-summary-banner">
+        <div>
+          <span class="label">Invoice Value:</span>
+          <span class="value" id="calc-invoice-val">$0.00</span>
+        </div>
+        <div>
+          <span class="label">Buyer Credit Rating:</span>
+          <span class="value" id="calc-buyer-rating">N/A</span>
+        </div>
+        <div>
+          <span class="label">Calculated Risk Score:</span>
+          <span class="value" id="calc-deal-risk">0/100</span>
+        </div>
+      </div>
+
+      <!-- Comparative Layout -->
+      <div class="dialog-split">
+        
+        <!-- Offers Grid -->
+        <div class="offers-grid-container">
+          <h3>Available Factoring Offers</h3>
+          <div class="comparison-offers-list" id="dialog-offers-list">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+
+        <!-- Dynamic Calculator Panel -->
+        <div class="calculator-panel glass-panel">
+          <h3>🧮 Interactive Cash Flow Calculator</h3>
+          <p class="small-text text-dim">Adjust parameters to simulate financing costs and cash flows for the selected offer.</p>
+          
+          <div class="calc-inputs">
+            <div class="form-group">
+              <label for="calc-slider-advance">Advance Rate: <span id="val-slider-advance">85</span>%</label>
+              <input type="range" id="calc-slider-advance" min="70" max="95" value="85" step="1">
+            </div>
+            
+            <div class="form-group">
+              <label for="calc-slider-fee">Factoring Fee Rate: <span id="val-slider-fee">2.5</span>%</label>
+              <input type="range" id="calc-slider-fee" min="0.5" max="6.0" value="2.5" step="0.1">
+            </div>
+
+            <div class="form-group">
+              <label for="calc-slider-apr">Interest APR (Reserve Hold): <span id="val-slider-apr">6.5</span>%</label>
+              <input type="range" id="calc-slider-apr" min="2.0" max="15.0" value="6.5" step="0.25">
+            </div>
+          </div>
+
+          <hr class="calc-separator">
+
+          <div class="calc-results">
+            <div class="calc-result-row">
+              <span class="label">Total Invoice Value:</span>
+              <span class="value" id="res-invoice-total">$0.00</span>
+            </div>
+            <div class="calc-result-row highlighted">
+              <span class="label">Immediate Advance (Cash Received):</span>
+              <span class="value text-success" id="res-advance-amount">$0.00</span>
+            </div>
+            <div class="calc-result-row">
+              <span class="label">Reserve Amount (Held by Factor):</span>
+              <span class="value" id="res-reserve-amount">$0.00</span>
+            </div>
+            <div class="calc-result-row text-danger-row">
+              <span class="label">Factoring Discount Fee:</span>
+              <span class="value text-danger" id="res-fee-amount">$0.00</span>
+            </div>
+            <div class="calc-result-row text-danger-row">
+              <span class="label">Est. Interest/APR Fee (60 Days):</span>
+              <span class="value text-danger" id="res-interest-amount">$0.00</span>
+            </div>
+            <hr class="calc-separator">
+            <div class="calc-result-row total-row">
+              <span class="label">Net Rebate at Settlement:</span>
+              <span class="value text-primary" id="res-rebate-amount">$0.00</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="dialog-footer">
+      <button class="btn btn-outline" onclick="document.getElementById('offer-comparison-dialog').close()" type="button">Close</button>
+    </div>
+  </dialog>
+
+  <!-- Document OCR Text Scanner Mock Modal -->
+  <dialog id="ocr-viewer-dialog" class="custom-dialog small">
+    <div class="dialog-header">
+      <h2>Document Analysis (OCR Scan Output)</h2>
+      <button type="button" class="btn-close-dialog" onclick="document.getElementById('ocr-viewer-dialog').close()">×</button>
+    </div>
+    <div class="dialog-body">
+      <div class="terminal-view">
+        <div class="terminal-header">
+          <span class="term-dot red"></span>
+          <span class="term-dot yellow"></span>
+          <span class="term-dot green"></span>
+          <span class="term-title">OCR_ENGINE_v4.2.1 // EXTRACTED_TEXT</span>
+        </div>
+        <pre class="terminal-body" id="ocr-terminal-content">
+          Loading document content...
+        </pre>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button class="btn btn-primary" onclick="document.getElementById('ocr-viewer-dialog').close()" type="button">OK</button>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

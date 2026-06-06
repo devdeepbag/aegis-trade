@@ -1,0 +1,9 @@
+# Local development / temporary files
+node_modules/
+.DS_Store
+*.log
+.gemini/
+.system_generated/
+scratch/
+.idea/
+.vscode/
